@@ -22,7 +22,7 @@
 
 // TODO: CHANGE THE NUMBER OF FISHES AND SIMULATION STEPS FOR EXPERIMENT
 #define NUM_FISHES 10
-#define NUM_SIMULATION_STEPS 1000 // Number of simulation steps
+#define NUM_SIMULATION_STEPS 10 // Number of simulation steps
 
 double square(double num) { return num * num; }
 
@@ -61,12 +61,13 @@ double calculateDistanceFromOrigin(double x, double y) {
 double calculateObjectiveFunction(Fish *fishes, int numFishes) {
   double sum = 0.0;
 
+#pragma omp parallel for reduction(+ : sum)
   for (int i = 0; i < numFishes; i++) {
     // sqrt(x^2 + y^2)
     sum += calculateDistanceFromOrigin((fishes + i)->x, (fishes + i)->y);
   }
 
-  //  TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
+  // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
   printf("Objective Function: %.2f\n", sum);
 
   return sum;
@@ -101,6 +102,7 @@ void simulationStep(Fish *fishes, int numFishes) {
 
   double maxDistanceTraveledInFishSchool = 0.0;
 
+#pragma omp parallel for reduction(max : maxDistanceTraveledInFishSchool)
   for (int i = 0; i < numFishes; i++) {
     double prevDistance =
         calculateDistanceFromOrigin((fishes + i)->x, (fishes + i)->y);
@@ -112,17 +114,18 @@ void simulationStep(Fish *fishes, int numFishes) {
 
     (fishes + i)->distanceTraveled = nextDistance - prevDistance;
 
-    //    Compare absolute value of distance traveled
+    // Compare absolute value of distance traveled
     if (fabs((fishes + i)->distanceTraveled) >
         maxDistanceTraveledInFishSchool) {
       maxDistanceTraveledInFishSchool = fabs((fishes + i)->distanceTraveled);
     }
   }
 
+#pragma omp parallel for
   for (int i = 0; i < numFishes; i++) {
     updateWeight((fishes + i), maxDistanceTraveledInFishSchool);
 
-    //    TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
+    // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
 
     printf(
         "Fish %d: x = %.2f, y = %.2f, distanceTraveled = %.2f, weight = %.2f\n",
@@ -135,6 +138,7 @@ void calculateBarycenter(Fish *fishes, int numFishes) {
   double weightSum = 0.0;
   double distanceSum = 0.0;
 
+#pragma omp parallel for reduction(+ : weightSum, distanceSum)
   for (int i = 0; i < numFishes; i++) {
     weightSum += (fishes + i)->weight *
                  calculateDistanceFromOrigin((fishes + i)->x, (fishes + i)->y);
@@ -145,25 +149,25 @@ void calculateBarycenter(Fish *fishes, int numFishes) {
   // Check if distanceSum is non-zero to prevent division by zero
   if (distanceSum < 0.0) {
     printf("Distance sum is zero. Cannot calculate barycenter.\n");
-
     return;
   }
 
   double barycenter = weightSum / distanceSum;
 
-  //  TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
+  // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
   printf("Barycenter: %.2f\n", barycenter);
 }
 
 // NOTE: CONSIDER BOUNDARY CONDITION WHERE FISH SHOULD NOT GO OUT OF BOUNDARY
 void initializeInitialLakeState(Fish *fishes, int numFishes) {
+#pragma omp parallel for
   for (int i = 0; i < numFishes; i++) {
     (fishes + i)->x = getRandomCoordinateInRange(-100, 100);
     (fishes + i)->y = getRandomCoordinateInRange(-100, 100);
     (fishes + i)->distanceTraveled = 0.0;
     (fishes + i)->weight = 1.0; // You can set the initial weight here 'w'
 
-    //    TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
+    // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
     printf(
         "Fish %d: x = %.2f, y = %.2f, distanceTraveled = %.2f, weight = %.2f\n",
         i, (fishes + i)->x, (fishes + i)->y, (fishes + i)->distanceTraveled,
@@ -190,7 +194,7 @@ int main() {
 
   for (int step = 0; step < NUM_SIMULATION_STEPS; step++) {
 
-    //    TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
+    // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
     printf("Simulation Step: %d\n", step);
     printf("##################################################\n");
     simulationStep(fishes, NUM_FISHES);
