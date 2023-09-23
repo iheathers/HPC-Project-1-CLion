@@ -1,6 +1,6 @@
 # ninja log v5
 1	285	1695376763338922171	CMakeFiles/Project1.dir/parallel-implementation.c.o	67fa8523db961b7f
-0	41	1695376920728582055	build.ninja	cbc9383f92b3cf04
+0	41	1695465631649429843	build.ninja	cbc9383f92b3cf04
 1	255	1695370940821700563	CMakeFiles/Project1.dir/sequential-with-print.c.o	9880422dd0523e27
 285	395	1695376763449244560	Project1	d1b61c44c710a2fd
 0	271	1695369496701556037	CMakeFiles/Project1.dir/main.c.o	38efd06ca3540bc3
