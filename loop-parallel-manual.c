@@ -3,6 +3,11 @@
 
 #define N 16
 
+/*
+Code Block 2 manually calculates the start and end indices for each thread to
+divide the work explicitly.
+*/
+
 int main() {
   int a[N], b[N], c[N];
 
