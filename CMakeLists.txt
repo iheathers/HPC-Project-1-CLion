@@ -9,8 +9,7 @@ set(CMAKE_C_STANDARD 11)
 # Find OpenMP package
 find_package(OpenMP REQUIRED)
 
-add_executable(Project1 parallel-implementation.c
-        hello-world.c)
+add_executable(Project1 loop-parallel-shortcut.c)
 
 # Enable OpenMP support
 if (OpenMP_C_FOUND)
