@@ -2,6 +2,9 @@
 // PRITAM SUWAL SHRESTHA (23771397)
 // RASPREET KHANUJA (23308425)
 
+// TODO: ALWAYS SET THE NUMBER OF THREADS TO IN SETONIX:
+// TODO: export OMP_NUM_THREADS=<NUMBER OF THREADS>
+
 #include <math.h>
 #include <omp.h>
 #include <stdbool.h>
