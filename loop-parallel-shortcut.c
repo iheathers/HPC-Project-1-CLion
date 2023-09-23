@@ -7,7 +7,7 @@
  among the threads.
  */
 
-#define N 100
+#define N 16
 
 int main() {
   int a[N], b[N], c[N];
