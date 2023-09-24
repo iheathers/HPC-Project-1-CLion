@@ -128,6 +128,8 @@ void simulationStep(Fish *fishes, int numFishes) {
     }
   }
 
+// FIND: WHETHER WE NEED BARRIER HERE OR NOT
+
 //  TODO: PRITAM SUWAL SHRESTHA (23771397)
 #pragma omp parallel for
   for (int i = 0; i < numFishes; i++) {
@@ -203,6 +205,8 @@ int main() {
 
   // Run the simulation
   double startTime = omp_get_wtime();
+
+  //  CHECK WHETHER WE NEED PARALLIZATION HERE OR NOT
 
   for (int step = 0; step < NUM_SIMULATION_STEPS; step++) {
 
