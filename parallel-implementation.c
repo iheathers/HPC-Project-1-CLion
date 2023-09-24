@@ -24,8 +24,8 @@
 #define MIN_FISH_WEIGHT 0.0 // Minimum weight of a fish
 
 // TODO: CHANGE THE NUMBER OF FISHES AND SIMULATION STEPS FOR EXPERIMENT
-#define NUM_FISHES 10
-#define NUM_SIMULATION_STEPS 10 // Number of simulation steps
+#define NUM_FISHES 1000
+#define NUM_SIMULATION_STEPS 100 // Number of simulation steps
 
 double square(double num) { return num * num; }
 
@@ -64,10 +64,10 @@ double calculateDistanceFromOrigin(double x, double y) {
 double calculateObjectiveFunction(Fish *fishes, int numFishes) {
   double sum = 0.0;
 
-  //  TODO: RASPREET KHANUJA (23308425)
-
 #pragma omp parallel for reduction(+ : sum)
+
   for (int i = 0; i < numFishes; i++) {
+
     // sqrt(x^2 + y^2)
     sum += calculateDistanceFromOrigin((fishes + i)->x, (fishes + i)->y);
   }
@@ -137,10 +137,10 @@ void simulationStep(Fish *fishes, int numFishes) {
 
     // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
 
-    printf(
-        "Fish %d: x = %.2f, y = %.2f, distanceTraveled = %.2f, weight = %.2f\n",
-        i, (fishes + i)->x, (fishes + i)->y, (fishes + i)->distanceTraveled,
-        (fishes + i)->weight);
+    printf("Thread : %d -> Fish %d: x = %.2f, y = %.2f, distanceTraveled = "
+           "%.2f, weight = %.2f\n",
+           omp_get_thread_num(), i, (fishes + i)->x, (fishes + i)->y,
+           (fishes + i)->distanceTraveled, (fishes + i)->weight);
   }
 }
 
@@ -176,8 +176,8 @@ void initializeInitialLakeState(Fish *fishes, int numFishes) {
 //  TODO: RASPREET KHANUJA (23308425)
 #pragma omp parallel for
   for (int i = 0; i < numFishes; i++) {
-    (fishes + i)->x = getRandomCoordinateInRange(-100, 100);
-    (fishes + i)->y = getRandomCoordinateInRange(-100, 100);
+    (fishes + i)->x = getRandomCoordinateInRange(LAKE_X_MIN, LAKE_X_MAX);
+    (fishes + i)->y = getRandomCoordinateInRange(LAKE_Y_MIN, LAKE_Y_MAX);
     (fishes + i)->distanceTraveled = 0.0;
     (fishes + i)->weight = 1.0; // You can set the initial weight here 'w'
 
@@ -222,7 +222,7 @@ int main() {
   double endTime = omp_get_wtime();
 
   double time_taken = endTime - startTime;
-  printf("Elapsed time: %.4f seconds\n", time_taken);
+  printf("Parallel Elapsed time: %.4f seconds\n", time_taken);
 
   // Free allocated memory
   free(fishes);

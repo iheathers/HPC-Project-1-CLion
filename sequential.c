@@ -158,8 +158,8 @@ void calculateBarycenter(Fish *fishes, int numFishes) {
 // NOTE: CONSIDER BOUNDARY CONDITION WHERE FISH SHOULD NOT GO OUT OF BOUNDARY
 void initializeInitialLakeState(Fish *fishes, int numFishes) {
   for (int i = 0; i < numFishes; i++) {
-    (fishes + i)->x = getRandomCoordinateInRange(-100, 100);
-    (fishes + i)->y = getRandomCoordinateInRange(-100, 100);
+    (fishes + i)->x = getRandomCoordinateInRange(LAKE_X_MIN, LAKE_X_MAX);
+    (fishes + i)->y = getRandomCoordinateInRange(LAKE_Y_MIN, LAKE_Y_MAX);
     (fishes + i)->distanceTraveled = 0.0;
     (fishes + i)->weight = 1.0; // You can set the initial weight here 'w'
 
