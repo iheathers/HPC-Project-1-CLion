@@ -9,7 +9,8 @@ set(CMAKE_C_STANDARD 11)
 # Find OpenMP package
 find_package(OpenMP REQUIRED)
 
-add_executable(Project1 pi.c)
+add_executable(Project1
+        lastprivate-example.c)
 
 # Enable OpenMP support
 if (OpenMP_C_FOUND)

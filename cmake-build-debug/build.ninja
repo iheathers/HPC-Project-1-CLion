@@ -49,8 +49,8 @@ cmake_ninja_workdir = /Users/pshre/University$ Projects/hpc-labs/Project1/cmake-
 
 build cmake_object_order_depends_target_Project1: phony || CMakeFiles/Project1.dir
 
-build CMakeFiles/Project1.dir/pi.c.o: C_COMPILER__Project1_unscanned_Debug /Users/pshre/University$ Projects/hpc-labs/Project1/pi.c || cmake_object_order_depends_target_Project1
-  DEP_FILE = CMakeFiles/Project1.dir/pi.c.o.d
+build CMakeFiles/Project1.dir/lastprivate-example.c.o: C_COMPILER__Project1_unscanned_Debug /Users/pshre/University$ Projects/hpc-labs/Project1/lastprivate-example.c || cmake_object_order_depends_target_Project1
+  DEP_FILE = CMakeFiles/Project1.dir/lastprivate-example.c.o.d
   FLAGS = -fopenmp -g -std=gnu11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles/Project1.dir
   OBJECT_FILE_DIR = CMakeFiles/Project1.dir
@@ -63,7 +63,7 @@ build CMakeFiles/Project1.dir/pi.c.o: C_COMPILER__Project1_unscanned_Debug /User
 #############################################
 # Link the executable Project1
 
-build Project1: C_EXECUTABLE_LINKER__Project1_Debug CMakeFiles/Project1.dir/pi.c.o | /opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/current/libgomp.dylib
+build Project1: C_EXECUTABLE_LINKER__Project1_Debug CMakeFiles/Project1.dir/lastprivate-example.c.o | /opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/current/libgomp.dylib
   FLAGS = -fopenmp -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   LINK_LIBRARIES = /opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/current/libgomp.dylib
   OBJECT_DIR = CMakeFiles/Project1.dir
