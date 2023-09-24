@@ -25,6 +25,8 @@ their indices, regardless of how threads are scheduled.
 
 // https://www.ibm.com/docs/nl/zos/2.3.0?topic=processing-pragma-omp-ordered
 
+// https://www.youtube.com/playlist?list=PLLX-Q6B8xqZ8n8bwjGdzBJ25X2utwnoEG
+
 void test(int first, int last) {
 // #pragma omp parallel
 #pragma omp parallel for schedule(static) ordered

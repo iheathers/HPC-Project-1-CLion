@@ -9,7 +9,7 @@ set(CMAKE_C_STANDARD 11)
 # Find OpenMP package
 find_package(OpenMP REQUIRED)
 
-add_executable(Project1 ordered-clause.c)
+add_executable(Project1 schedule-example.c)
 
 # Enable OpenMP support
 if (OpenMP_C_FOUND)
