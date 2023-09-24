@@ -1,0 +1,16 @@
+// to compile and run a C program
+gcc-13 -fopenmp -o output sequential.c
+./output
+
+// to login to setonix
+ssh -l rkhanuja setonix.pawsey.org.au
+
+// submit a job in setonix
+sbatch sequential-job.sh
+
+
+Shortcuts:
+Multi-line comment - Shift + Option + A
+
+Move to the front or end of line - Control + shift forward/ backward keys
+
