@@ -11,7 +11,7 @@ divide the work explicitly.
 int main() {
   int a[N], b[N], c[N];
 
-  omp_set_num_threads(3);
+  omp_set_num_threads(2);
 
   // Initialize arrays a and b
   for (int i = 0; i < N; i++) {

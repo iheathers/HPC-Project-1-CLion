@@ -88,6 +88,10 @@ chunk size and schedule using environment variables:
    export OMP_SCHEDULE="guided,1"
    ```
 
+   ```bash
+   export OMP_SCHEDULE="auto"
+   ```
+
 2. **Running Your Program:**
 
    After setting the `OMP_SCHEDULE` environment variable, you can run your OpenMP program as usual. Your program will
