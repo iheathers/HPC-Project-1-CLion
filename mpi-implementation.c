@@ -43,8 +43,9 @@ int main(int argc, char *argv[]) {
   MPI_Comm_rank(MPI_COMM_WORLD, &taskid);
 
   Fish *fishes;
-  int numFishInWorker;
+  int numFishInWorker, numFishToDistribute;
   int mtype;
+  int offset;
 
   // Master generates and distributes fish data
   if (taskid == 0) {
@@ -62,36 +63,35 @@ int main(int argc, char *argv[]) {
     writeFishDataToFile("fish_data_initial.txt", fishes, NUM_FISHES);
 
     // Calculate distribution
-    numFishInWorker = NUM_FISHES / numtasks;
+    numFishToDistribute = NUM_FISHES / numtasks;
     int extra = NUM_FISHES % numtasks;
-    int offset = 0;
+    offset = 0;
 
     // Master sends fish data to all nodes (including itself)
     for (int dest = 0; dest < numtasks; dest++) {
-      int numFishToDistribute = (dest < extra) ? numFishInWorker + 1 : numFishInWorker;
+      int numFishInWorker = (dest < extra) ? numFishToDistribute + 1 : numFishToDistribute;
 
       mtype = 1;  // FROM_MASTER
-      MPI_Send(&numFishToDistribute, 1, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-      MPI_Send(fishes + offset, numFishToDistribute * sizeof(Fish), MPI_BYTE, dest, mtype, MPI_COMM_WORLD);
+      MPI_Send(&numFishInWorker, 1, MPI_INT, dest, mtype, MPI_COMM_WORLD);
+      MPI_Send(fishes + offset, numFishInWorker * sizeof(Fish), MPI_BYTE, dest, mtype, MPI_COMM_WORLD);
 
-      offset += numFishToDistribute;
+      offset += numFishInWorker;
     }
   } else {
     // Workers receive fish data
     mtype = 1;  // FROM_MASTER
     for (int source = 0; source < numtasks; source++) {
       MPI_Recv(&numFishInWorker, 1, MPI_INT, source, mtype, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
       fishes = (Fish *)malloc(numFishInWorker * sizeof(Fish));
-      MPI_Recv(fishes, numFishInWorker * sizeof(Fish), MPI_BYTE, source, mtype, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
+      MPI_Recv(fishes + offset, numFishInWorker * sizeof(Fish), MPI_BYTE, source, mtype, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
       // Send the received data back to the master
       mtype = 2;  // FROM_WORKER
       MPI_Send(&numFishInWorker, 1, MPI_INT, 0, mtype, MPI_COMM_WORLD);
-      MPI_Send(fishes, numFishInWorker * sizeof(Fish), MPI_BYTE, 0, mtype, MPI_COMM_WORLD);
-
+      MPI_Send(fishes + offset, numFishInWorker * sizeof(Fish), MPI_BYTE, 0, mtype, MPI_COMM_WORLD);
       free(fishes);
+      offset += numFishInWorker;
+
     }
   }
 
@@ -100,27 +100,23 @@ int main(int argc, char *argv[]) {
   // The master node receives data from workers
   if (taskid == 0) {
     Fish *masterFishes = (Fish *)malloc(NUM_FISHES * sizeof(Fish));
-    int offset = 0;
-
     for (int source = 1; source < numtasks; source++) {
       // Receive fish data from workers
       mtype = 2;  // FROM_WORKER
       MPI_Recv(&numFishInWorker, 1, MPI_INT, source, mtype, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
       fishes = (Fish *)malloc(numFishInWorker * sizeof(Fish));
-      MPI_Recv(fishes, numFishInWorker * sizeof(Fish), MPI_BYTE, source, mtype, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      MPI_Recv(fishes + offset, numFishInWorker * sizeof(Fish), MPI_BYTE, source, mtype, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
       // Process received data and write to file
       char recvFileName[50];
       snprintf(recvFileName, sizeof(recvFileName), "fish_data_received_%d.txt", source);
-      writeFishDataToFile(recvFileName, fishes, numFishInWorker);
+      writeFishDataToFile(recvFileName, fishes + offset, numFishInWorker);
 
       // Accumulate data in the master array
       for (int i = 0; i < numFishInWorker; i++) {
         masterFishes[offset + i] = fishes[i];
       }
-
-      offset += numFishInWorker;
 
       free(fishes);
     }
