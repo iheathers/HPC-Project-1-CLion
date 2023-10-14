@@ -14,3 +14,7 @@ which mpicc
 // check mpi version
 mpirun --version
 mpirun (Open MPI) 4.1.5
+
+// to compile & run mpi program
+mpicc -o mpi-output mpi-implementation.c
+mpirun -np 4 ./mpi-output
