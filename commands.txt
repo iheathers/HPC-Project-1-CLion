@@ -1,0 +1,16 @@
+// command to list files & directories associated with gcc
+brew list gcc
+
+// Path for gcc compiler (that runs OpenMP)
+/usr/local/Cellar/gcc/13.2.0/bin/gcc-13
+
+// command to install open-mpi
+brew install open-mpi
+
+// command to check mpi compiler path
+which mpicc
+/usr/local/bin/mpicc
+
+// check mpi version
+mpirun --version
+mpirun (Open MPI) 4.1.5
