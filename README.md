@@ -10,7 +10,6 @@ This project involves the development and performance analysis of a simulation p
 
 - **`sequential.c`**: Contains the sequential implementation of the fish school simulation.
 - **`parallel-implementation.c`**: Contains the parallel implementation using OpenMP for multi-threading.
-- **`hello-world.c`**: A simple "Hello, World!" program, likely used to test the environment setup.
 - **`CMakeLists.txt`**: The CMake configuration file to build the project.
 - **`.clang-format`**: Defines the coding style guidelines for the project.
 - **`.clang-tidy`**: Defines linting rules for code quality checks.
