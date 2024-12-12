@@ -1,6 +1,12 @@
-//
-// Created by Pritam Suwal Shrestha on 22/9/2023.
-//
 
-// number of fished         // no of simulation step          // time elapsed
-// for simulation
+#include <omp.h>
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+  printf("OpenMP running with %d threads\n", omp_get_max_threads());
+
+#pragma omp parallel default(none)
+  { printf("Hello World from thread %d\n", omp_get_thread_num()); }
+
+  return 0;
+}

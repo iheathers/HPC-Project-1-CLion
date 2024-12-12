@@ -2,6 +2,9 @@
 // PRITAM SUWAL SHRESTHA (23771397)
 // RASPREET KHANUJA (23308425)
 
+// TODO: ALWAYS SET THE NUMBER OF THREADS TO IN SETONIX:
+// TODO: export OMP_NUM_THREADS=<NUMBER OF THREADS>
+
 #include <math.h>
 #include <omp.h>
 #include <stdbool.h>
@@ -21,8 +24,8 @@
 #define MIN_FISH_WEIGHT 0.0 // Minimum weight of a fish
 
 // TODO: CHANGE THE NUMBER OF FISHES AND SIMULATION STEPS FOR EXPERIMENT
-#define NUM_FISHES 10
-#define NUM_SIMULATION_STEPS 10 // Number of simulation steps
+#define NUM_FISHES 1000
+#define NUM_SIMULATION_STEPS 100 // Number of simulation steps
 
 double square(double num) { return num * num; }
 
@@ -62,7 +65,9 @@ double calculateObjectiveFunction(Fish *fishes, int numFishes) {
   double sum = 0.0;
 
 #pragma omp parallel for reduction(+ : sum)
+
   for (int i = 0; i < numFishes; i++) {
+
     // sqrt(x^2 + y^2)
     sum += calculateDistanceFromOrigin((fishes + i)->x, (fishes + i)->y);
   }
@@ -102,6 +107,8 @@ void simulationStep(Fish *fishes, int numFishes) {
 
   double maxDistanceTraveledInFishSchool = 0.0;
 
+  //  TODO: PRITAM SUWAL SHRESTHA (23771397)
+
 #pragma omp parallel for reduction(max : maxDistanceTraveledInFishSchool)
   for (int i = 0; i < numFishes; i++) {
     double prevDistance =
@@ -121,22 +128,27 @@ void simulationStep(Fish *fishes, int numFishes) {
     }
   }
 
+// FIND: WHETHER WE NEED BARRIER HERE OR NOT
+
+//  TODO: PRITAM SUWAL SHRESTHA (23771397)
 #pragma omp parallel for
   for (int i = 0; i < numFishes; i++) {
     updateWeight((fishes + i), maxDistanceTraveledInFishSchool);
 
     // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
 
-    printf(
-        "Fish %d: x = %.2f, y = %.2f, distanceTraveled = %.2f, weight = %.2f\n",
-        i, (fishes + i)->x, (fishes + i)->y, (fishes + i)->distanceTraveled,
-        (fishes + i)->weight);
+    printf("Thread : %d -> Fish %d: x = %.2f, y = %.2f, distanceTraveled = "
+           "%.2f, weight = %.2f\n",
+           omp_get_thread_num(), i, (fishes + i)->x, (fishes + i)->y,
+           (fishes + i)->distanceTraveled, (fishes + i)->weight);
   }
 }
 
 void calculateBarycenter(Fish *fishes, int numFishes) {
   double weightSum = 0.0;
   double distanceSum = 0.0;
+
+  //  TODO: RASPREET KHANUJA (23308425)
 
 #pragma omp parallel for reduction(+ : weightSum, distanceSum)
   for (int i = 0; i < numFishes; i++) {
@@ -160,10 +172,12 @@ void calculateBarycenter(Fish *fishes, int numFishes) {
 
 // NOTE: CONSIDER BOUNDARY CONDITION WHERE FISH SHOULD NOT GO OUT OF BOUNDARY
 void initializeInitialLakeState(Fish *fishes, int numFishes) {
+
+//  TODO: RASPREET KHANUJA (23308425)
 #pragma omp parallel for
   for (int i = 0; i < numFishes; i++) {
-    (fishes + i)->x = getRandomCoordinateInRange(-100, 100);
-    (fishes + i)->y = getRandomCoordinateInRange(-100, 100);
+    (fishes + i)->x = getRandomCoordinateInRange(LAKE_X_MIN, LAKE_X_MAX);
+    (fishes + i)->y = getRandomCoordinateInRange(LAKE_Y_MIN, LAKE_Y_MAX);
     (fishes + i)->distanceTraveled = 0.0;
     (fishes + i)->weight = 1.0; // You can set the initial weight here 'w'
 
@@ -192,6 +206,8 @@ int main() {
   // Run the simulation
   double startTime = omp_get_wtime();
 
+  //  CHECK WHETHER WE NEED PARALLIZATION HERE OR NOT
+
   for (int step = 0; step < NUM_SIMULATION_STEPS; step++) {
 
     // TODO: COMMENT OUT THE PRINTF STATEMENT FOR EXPERIMENT
@@ -206,7 +222,7 @@ int main() {
   double endTime = omp_get_wtime();
 
   double time_taken = endTime - startTime;
-  printf("Elapsed time: %.4f seconds\n", time_taken);
+  printf("Parallel Elapsed time: %.4f seconds\n", time_taken);
 
   // Free allocated memory
   free(fishes);
